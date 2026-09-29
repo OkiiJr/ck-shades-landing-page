@@ -1,7 +1,7 @@
 document.documentElement.classList.add("js");
 
-// Replace this example number with the store's full international number (digits only).
-const WHATSAPP_NUMBER = "15551234567";
+// CK Shades full international number (digits only, no "+", spaces or dashes).
+const WHATSAPP_NUMBER = "2347046640309";
 const DEFAULT_WHATSAPP_MESSAGE = "Hello CK Shades, I'd love to know more about the collection.";
 
 const whatsappLinks = document.querySelectorAll("[data-whatsapp]");
