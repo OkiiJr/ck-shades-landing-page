@@ -16,7 +16,7 @@ Then open `http://localhost:8000`.
 
 - Replace the campaign and product images in `images/` with approved CK Shades assets. The current images are generated visual placeholders.
 - Edit product names, descriptions and prices in `index.html`.
-- Set the real WhatsApp phone number (country code + number, digits only) in `script.js`. WhatsApp inquiry messages are set with each link's `data-whatsapp` attribute.
+- Set the real WhatsApp phone number (country code + number, digits only) in `script.js`. Each product’s **Shop on WhatsApp** button opens a chat with that frame’s prefilled message; edit the message in its `data-whatsapp` attribute in `index.html`.
 - Replace the contact email, phone number and social profile URLs in the footer before launch.
 - The three testimonial cards are explicitly marked as fictional sample reviews and should be replaced with approved customer reviews.
 
