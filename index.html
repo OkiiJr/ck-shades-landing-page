@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1eb" />
+    <meta
+      name="description"
+      content="Meet CK Shades: thoughtfully designed sunglasses with considered details, lasting comfort, and a point of view all your own."
+    />
+    <title>CK Shades — See Luxury Differently</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preload" as="image" href="images/hero-editorial.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announcement-bar">
+      <p>Thoughtful frames for brighter days <span aria-hidden="true">·</span> Complimentary shipping over $150</p>
+    </div>
+
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="#home" aria-label="CK Shades home">
+          <span class="brand-mark">CK</span>
+          <span class="brand-name">SHADES</span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <a href="#home">Home</a>
+          <a href="#collection">Collection</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <a class="button button-dark header-cta" href="#collection">
+          Shop collection
+          <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9h10M9 4.5 13.5 9 9 13.5" /></svg>
+        </a>
+
+        <button
+          class="mobile-toggle"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" hidden>
+        <a href="#home">Home</a>
+        <a href="#collection">Collection</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a class="button button-dark" href="#collection">Shop collection <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <img
+          class="hero-image"
+          src="images/hero-editorial.jpg"
+          alt="A woman in sculptural black sunglasses in the late afternoon light"
+          fetchpriority="high"
+        />
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="container hero-content">
+          <div class="hero-copy" data-reveal>
+            <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> The CK Shades point of view</p>
+            <h1 id="hero-title">See luxury<br /><em>differently.</em></h1>
+            <p class="hero-intro">
+              Considered frames. A little more confidence. A fresh perspective on the everyday.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-light" href="#collection">
+                Shop collection
+                <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9h10M9 4.5 13.5 9 9 13.5" /></svg>
+              </a>
+              <a class="text-link text-link-light" href="#about">Explore CK Shades <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-index" aria-hidden="true"><span>01</span><span class="hero-index-line"></span><span>04</span></div>
+        <a class="hero-scroll" href="#collection"><span>Scroll to discover</span><i aria-hidden="true"></i></a>
+      </section>
+
+      <section class="promise-strip" aria-label="CK Shades details">
+        <div class="container promise-items">
+          <p>Made for your every day</p>
+          <span class="promise-star" aria-hidden="true">✳</span>
+          <p>100% UVA / UVB protection</p>
+          <span class="promise-star" aria-hidden="true">✳</span>
+          <p>Designed to stay in style</p>
+        </div>
+      </section>
+
+      <section class="collection-section section-space" id="collection" aria-labelledby="collection-title">
+        <div class="container">
+          <div class="section-heading collection-heading" data-reveal>
+            <div>
+              <p class="eyebrow">01 <span class="eyebrow-separator">/</span> The CK edit</p>
+              <h2 id="collection-title">The frames you'll <em>reach for.</em></h2>
+            </div>
+            <div class="section-heading-aside">
+              <p>Quietly distinctive shapes, made to become part of your point of view.</p>
+              <a class="text-link" href="#signature">Explore the signature edit <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+
+          <div class="product-grid">
+            <article class="product-card" data-reveal style="--reveal-delay: 0ms">
+              <a
+                class="product-image-link"
+                href="https://wa.me/15551234567"
+                data-whatsapp="Hello CK Shades, I'm interested in the Noir 01 sunglasses."
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ask about Noir 01 on WhatsApp"
+              >
+                <div class="product-image-frame">
+                  <img src="images/product-noir.jpg" alt="Glossy black acetate cat-eye sunglasses on travertine" loading="lazy" decoding="async" />
+                  <span class="product-tag">Bestseller</span>
+                  <span class="image-action" aria-hidden="true">↗</span>
+                </div>
+              </a>
+              <div class="product-info">
+                <div class="product-title-row"><h3>Noir 01</h3><span class="product-price">$190</span></div>
+                <p class="product-description">Sculpted black acetate · Smoke lens</p>
+                <a class="product-shop" href="https://wa.me/15551234567" data-whatsapp="Hello CK Shades, I'd love to shop the Noir 01 sunglasses." target="_blank" rel="noopener noreferrer">Shop now <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+
+            <article class="product-card" data-reveal style="--reveal-delay: 90ms">
+              <a
+                class="product-image-link"
+                href="https://wa.me/15551234567"
+                data-whatsapp="Hello CK Shades, I'm interested in the Sienna 02 sunglasses."
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ask about Sienna 02 on WhatsApp"
+              >
+                <div class="product-image-frame">
+                  <img src="images/product-amber.jpg" alt="Warm tortoiseshell acetate sunglasses on soft ivory linen" loading="lazy" decoding="async" />
+                  <span class="product-tag">New arrival</span>
+                  <span class="image-action" aria-hidden="true">↗</span>
+                </div>
+              </a>
+              <div class="product-info">
+                <div class="product-title-row"><h3>Sienna 02</h3><span class="product-price">$185</span></div>
+                <p class="product-description">Warm tortoise acetate · Amber lens</p>
+                <a class="product-shop" href="https://wa.me/15551234567" data-whatsapp="Hello CK Shades, I'd love to shop the Sienna 02 sunglasses." target="_blank" rel="noopener noreferrer">Shop now <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+
+            <article class="product-card" data-reveal style="--reveal-delay: 180ms">
+              <a
+                class="product-image-link"
+                href="https://wa.me/15551234567"
+                data-whatsapp="Hello CK Shades, I'm interested in the Forma 03 sunglasses."
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ask about Forma 03 on WhatsApp"
+              >
+                <div class="product-image-frame">
+                  <img src="images/product-sienna.jpg" alt="Deep olive acetate sunglasses on pale sculptural stone" loading="lazy" decoding="async" />
+                  <span class="product-tag">The everyday</span>
+                  <span class="image-action" aria-hidden="true">↗</span>
+                </div>
+              </a>
+              <div class="product-info">
+                <div class="product-title-row"><h3>Forma 03</h3><span class="product-price">$195</span></div>
+                <p class="product-description">Olive acetate · Soft square silhouette</p>
+                <a class="product-shop" href="https://wa.me/15551234567" data-whatsapp="Hello CK Shades, I'd love to shop the Forma 03 sunglasses." target="_blank" rel="noopener noreferrer">Shop now <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+
+            <article class="product-card" data-reveal style="--reveal-delay: 270ms">
+              <a
+                class="product-image-link"
+                href="https://wa.me/15551234567"
+                data-whatsapp="Hello CK Shades, I'm interested in the Sol 04 sunglasses."
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ask about Sol 04 on WhatsApp"
+              >
+                <div class="product-image-frame">
+                  <img src="images/product-sol.jpg" alt="Champagne-gold metal aviator sunglasses on warm sand-colored stone" loading="lazy" decoding="async" />
+                  <span class="product-tag">Lightweight</span>
+                  <span class="image-action" aria-hidden="true">↗</span>
+                </div>
+              </a>
+              <div class="product-info">
+                <div class="product-title-row"><h3>Sol 04</h3><span class="product-price">$210</span></div>
+                <p class="product-description">Champagne metal · Soft smoke lens</p>
+                <a class="product-shop" href="https://wa.me/15551234567" data-whatsapp="Hello CK Shades, I'd love to shop the Sol 04 sunglasses." target="_blank" rel="noopener noreferrer">Shop now <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          </div>
+          <p class="placeholder-note">Product names, pricing and imagery are illustrative placeholders.</p>
+        </div>
+      </section>
+
+      <section class="statement-band" aria-labelledby="statement-title">
+        <div class="container statement-layout" data-reveal>
+          <div class="statement-main">
+            <p class="eyebrow eyebrow-light">02 <span class="eyebrow-separator">/</span> Our point of view</p>
+            <h2 id="statement-title">Less noise.<br /><em>More you.</em></h2>
+          </div>
+          <div class="statement-copy">
+            <span class="statement-rule" aria-hidden="true"></span>
+            <p class="statement-lede">Everyday luxury should feel effortless.</p>
+            <p>CK Shades brings considered style, thoughtful craftsmanship and everyday ease into one essential frame. The kind you put on — and feel more like yourself.</p>
+            <a class="text-link text-link-light" href="#about">Get to know us <span aria-hidden="true">↗</span></a>
+          </div>
+          <span class="statement-watermark" aria-hidden="true">CK</span>
+        </div>
+      </section>
+
+      <section class="signature-section section-space" id="signature" aria-labelledby="signature-title">
+        <div class="container signature-layout">
+          <figure class="signature-image-wrap" data-reveal>
+            <img src="images/signature-campaign.jpg" alt="Model in slim black CK Shades-inspired frames in a sunlit modern courtyard" loading="lazy" decoding="async" />
+            <figcaption><span>CK Shades</span><span>Campaign 01 — In good light</span></figcaption>
+          </figure>
+          <div class="signature-copy" data-reveal>
+            <p class="eyebrow">03 <span class="eyebrow-separator">/</span> Signature collection</p>
+            <h2 id="signature-title">A modern icon,<br /><em>in the making.</em></h2>
+            <p class="signature-description">Sculptural lines, an easy fit, and just the right amount of presence. The Signature collection is designed to move naturally from slow mornings to golden-hour plans.</p>
+            <div class="signature-details">
+              <div><span>01</span><p>Distinctive by design</p></div>
+              <div><span>02</span><p>Made for everyday wear</p></div>
+            </div>
+            <a class="button button-dark" href="#collection">Explore the collection <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9h10M9 4.5 13.5 9 9 13.5" /></svg></a>
+            <p class="signature-caption">A clear point of view. Yours to make.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="why-section section-space" id="why" aria-labelledby="why-title">
+        <div class="container">
+          <div class="section-heading why-heading" data-reveal>
+            <div>
+              <p class="eyebrow">04 <span class="eyebrow-separator">/</span> The details matter</p>
+              <h2 id="why-title">A good frame <em>does more.</em></h2>
+            </div>
+            <p class="why-intro">Thoughtfully considered from the first sketch to the last light of the day.</p>
+          </div>
+          <div class="benefit-grid">
+            <article class="benefit-card" data-reveal>
+              <span class="benefit-number">01</span>
+              <svg class="benefit-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5.5 29 18l13 6-13 5-5 13-5-13-13-5 13-6 5-12.5Z" /><path d="m35 6 1.7 4.3L41 12l-4.3 1.7L35 18l-1.7-4.3L29 12l4.3-1.7L35 6Z" /></svg>
+              <h3>Premium craftsmanship</h3>
+              <p>Considered materials and carefully finished details, made to feel as good as they look.</p>
+            </article>
+            <article class="benefit-card" data-reveal style="--reveal-delay: 90ms">
+              <span class="benefit-number">02</span>
+              <svg class="benefit-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="8.5" /><path d="M24 3.5v6M24 38.5v6M3.5 24h6M38.5 24h6M9.5 9.5l4.3 4.3m20.4 20.4 4.3 4.3m0-29-4.3 4.3M13.8 34.2l-4.3 4.3" /></svg>
+              <h3>UV protection</h3>
+              <p>Full UVA and UVB protection helps you meet bright days with a little more ease.</p>
+            </article>
+            <article class="benefit-card" data-reveal style="--reveal-delay: 180ms">
+              <span class="benefit-number">03</span>
+              <svg class="benefit-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M7 18.5h9.5a7.5 7.5 0 0 1 7.5 7.5v.5a7.5 7.5 0 0 1-7.5 7.5h-3A7.5 7.5 0 0 1 6 26.5v-8Zm34 0h-9.5A7.5 7.5 0 0 0 24 26v.5a7.5 7.5 0 0 0 7.5 7.5h3a7.5 7.5 0 0 0 7.5-7.5v-8ZM23.5 26h1M6 21.5l-3-1m39 1 3-1" /></svg>
+              <h3>Timeless design</h3>
+              <p>Distinctive, balanced silhouettes that feel current now and personal for years to come.</p>
+            </article>
+            <article class="benefit-card" data-reveal style="--reveal-delay: 270ms">
+              <span class="benefit-number">04</span>
+              <svg class="benefit-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5.5c-7.7 8.6-12 14-12 21a12 12 0 0 0 24 0c0-7-4.3-12.4-12-21Z" /><path d="M19 29.5a5 5 0 0 0 5 5" /></svg>
+              <h3>Comfort, all day</h3>
+              <p>Lightweight, well-balanced frames designed to feel at home from morning to evening.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section section-space" id="about" aria-labelledby="about-title">
+        <div class="container about-layout">
+          <div class="about-copy" data-reveal>
+            <p class="eyebrow">05 <span class="eyebrow-separator">/</span> A little about us</p>
+            <h2 id="about-title">For the way you see <em>the world.</em></h2>
+            <p>CK Shades is a modern eyewear label built around confidence, individuality and refined style. We believe the right frame doesn't change who you are — it brings a little more of you into focus.</p>
+            <p>So we keep the design considered, the details intentional and the feeling unmistakably effortless. Frames to be worn often, lived in, and made your own.</p>
+            <div class="about-signoff">
+              <span class="about-monogram" aria-hidden="true">CK</span>
+              <div><strong>Confidence, in focus.</strong><span>Independent spirit. Considered design.</span></div>
+            </div>
+          </div>
+          <figure class="about-image" data-reveal>
+            <img src="images/about-editorial.jpg" alt="A man wearing refined tortoiseshell sunglasses in a warm, sunlit courtyard" loading="lazy" decoding="async" />
+            <figcaption><span>CK Shades</span><span>Made for your point of view</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="testimonials-section section-space" aria-labelledby="testimonials-title">
+        <div class="container">
+          <div class="section-heading testimonials-heading" data-reveal>
+            <div>
+              <p class="eyebrow">06 <span class="eyebrow-separator">/</span> Notes from the everyday</p>
+              <h2 id="testimonials-title">Style, in their <em>own words.</em></h2>
+            </div>
+            <p class="sample-disclaimer">Fictional sample reviews for layout demonstration.</p>
+          </div>
+          <div class="testimonial-grid">
+            <article class="testimonial-card" data-reveal>
+              <span class="review-label">Fictional sample review</span>
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>I reach for them without thinking. They make even a simple outfit feel finished.</blockquote>
+              <div class="review-author"><span class="author-initial">M</span><div><strong>Maya R.</strong><span>Sample customer</span></div></div>
+            </article>
+            <article class="testimonial-card" data-reveal style="--reveal-delay: 100ms">
+              <span class="review-label">Fictional sample review</span>
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>The shape is so flattering, and every detail feels thoughtful from the first wear.</blockquote>
+              <div class="review-author"><span class="author-initial">T</span><div><strong>Theo L.</strong><span>Sample customer</span></div></div>
+            </article>
+            <article class="testimonial-card" data-reveal style="--reveal-delay: 200ms">
+              <span class="review-label">Fictional sample review</span>
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>My everyday pair. Comfortable enough to forget I'm wearing them — in the best way.</blockquote>
+              <div class="review-author"><span class="author-initial">S</span><div><strong>Samira K.</strong><span>Sample customer</span></div></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-cta" id="contact" aria-labelledby="closing-title">
+        <div class="closing-inner container" data-reveal>
+          <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> Find your point of view</p>
+          <h2 id="closing-title">Your signature<br /><em>frame awaits.</em></h2>
+          <p>Make the everyday feel a little more like you.</p>
+          <a
+            class="button button-light"
+            href="https://wa.me/15551234567"
+            data-whatsapp="Hello CK Shades, I'd love to find my signature frame."
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Shop CK Shades
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9h10M9 4.5 13.5 9 9 13.5" /></svg>
+          </a>
+        </div>
+        <span class="closing-monogram" aria-hidden="true">CK</span>
+        <span class="closing-index" aria-hidden="true">CK SHADES — EST. IN GOOD LIGHT</span>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-brand-column">
+            <a class="brand brand-light" href="#home" aria-label="CK Shades home">
+              <span class="brand-mark">CK</span>
+              <span class="brand-name">SHADES</span>
+            </a>
+            <p>Thoughtful frames for the everyday, and the exceptional.</p>
+            <a class="footer-whatsapp" href="https://wa.me/15551234567" data-whatsapp="Hello CK Shades, I'd like to know more about the collection." target="_blank" rel="noopener noreferrer">Chat with us on WhatsApp <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="footer-column">
+            <h2>Explore</h2>
+            <a href="#home">Home</a>
+            <a href="#collection">Collection</a>
+            <a href="#signature">Signature edit</a>
+            <a href="#about">Our story</a>
+          </div>
+          <div class="footer-column">
+            <h2>Follow along</h2>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
+            <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="footer-column footer-contact">
+            <h2>Say hello</h2>
+            <a href="mailto:hello@ckshades.com">hello@ckshades.com</a>
+            <a href="tel:+15551234567">+1 (555) 123-4567</a>
+            <span>Monday – Friday, 9am – 5pm</span>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© <span data-current-year>2026</span> CK Shades. All rights reserved.</p>
+          <p>Considered style. Everyday ease.</p>
+          <a href="#home" class="back-to-top">Back to top ↑</a>
+        </div>
+      </div>
+    </footer>
+
+    <a
+      class="whatsapp-float"
+      href="https://wa.me/15551234567"
+      data-whatsapp="Hello CK Shades, I have a question about your sunglasses."
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with CK Shades on WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 3.6A11.8 11.8 0 0 0 1.9 17.8L.3 23.7l6-1.6A11.8 11.8 0 0 0 22 11.8c0-3.1-1.2-6-3.4-8.2ZM12 20.2a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.6 1 1-3.5-.2-.4A9.8 9.8 0 1 1 12 20.2Zm5.4-7.4c-.3-.2-1.7-.9-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7 0a8.1 8.1 0 0 1-2.4-1.5 8.7 8.7 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.7l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6s-.7-1.7-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.8 1.2 3.2 1.4 3.4c.2.2 2.4 3.7 5.8 5.1.8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.7-.7 1.9-1.3.2-.6.2-1.1.2-1.3-.1-.2-.3-.3-.6-.5Z" /></svg>
+    </a>
+  </body>
+</html>
