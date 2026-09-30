@@ -5,9 +5,12 @@ const WHATSAPP_NUMBER = "2347046640309";
 const DEFAULT_WHATSAPP_MESSAGE = "Hello CK Shades, I'd love to know more about the collection.";
 
 // Direct-chat CTAs (floating button, footer chat link, closing CTA) get their
-// WhatsApp handoff here. Product purchase CTAs carry data-order-product and
-// route to the order form instead — never rewrite those to wa.me links.
-const whatsappLinks = document.querySelectorAll("[data-whatsapp]:not([data-order-product])");
+// WhatsApp handoff here. Product CTAs carry data-order-product, and anything
+// pointing at an in-page anchor is an internal link: those are never rewritten
+// to wa.me, so a product "Shop Now" button can never open WhatsApp directly.
+const whatsappLinks = document.querySelectorAll(
+  "[data-whatsapp]:not([data-order-product]):not([href^='#'])"
+);
 whatsappLinks.forEach((link) => {
   const message = link.dataset.whatsapp || DEFAULT_WHATSAPP_MESSAGE;
   link.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -152,17 +155,88 @@ if (orderForm) {
   });
 }
 
-/* ─── Product CTAs → order form ─── */
+/* ─── Product CTAs → the existing order / enquiry form ─── */
 
-// Product CTAs link to #order natively: smooth scrolling, the sticky-header
-// offset and the reduced-motion fallback are all handled by existing CSS.
-// On click we just preselect the matching frame in the order form.
+// Every product CTA (the image link and the "Shop Now" button) is an internal
+// link to #order that carries the frame name in data-order-product. Clicking one
+// must never open WhatsApp: it scrolls to the existing form and preselects the
+// frame there. WhatsApp is only opened later, by the form's own submit handler.
+//
+// The markup already provides href="#order", so the flow still works without
+// JavaScript — this only upgrades it with the preselection and a deterministic
+// smooth scroll.
+
+const ORDER_SECTION_ID = "order";
+const ORDER_FORM_ID = "order-form";
+const PRODUCT_FIELD_ID = "order-product";
+const WHATSAPP_URL_PATTERN =
+  /^https?:\/\/(?:www\.)?(?:wa\.me|api\.whatsapp\.com|web\.whatsapp\.com|whatsapp\.com)\//i;
+
+// "Noir 01 — $190" → "noir 01", so a card and its <option> can be matched even
+// if one of them had its price edited without the other.
+function frameKey(label) {
+  return String(label)
+    .split(/[—–]|\s-\s/)
+    .shift()
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function selectFrame(label) {
+  const field = document.getElementById(PRODUCT_FIELD_ID);
+  if (!field || !label) return false;
+
+  const options = Array.from(field.options);
+  const match =
+    options.find((option) => option.value === label) ||
+    options.find((option) => option.value && frameKey(option.value) === frameKey(label));
+
+  if (!match) return false;
+  if (field.value !== match.value) {
+    field.value = match.value;
+    field.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  return true;
+}
+
+function focusOrderForm() {
+  const form = document.getElementById(ORDER_FORM_ID);
+  if (!form || typeof form.focus !== "function") return;
+  if (!form.hasAttribute("tabindex")) form.setAttribute("tabindex", "-1");
+  // preventScroll keeps the smooth scroll above uninterrupted.
+  form.focus({ preventScroll: true });
+}
+
+function handleProductCtaClick(event) {
+  // Leave modified clicks (open in new tab, save link, …) to the browser.
+  if (event.defaultPrevented || event.button !== 0) return;
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+  const target = document.getElementById(ORDER_SECTION_ID) || document.getElementById(ORDER_FORM_ID);
+  if (!target || typeof target.scrollIntoView !== "function") return; // fall back to the native #order link
+
+  // Preselect before scrolling, so the customer sees their frame already chosen.
+  if (!selectFrame(event.currentTarget.dataset.orderProduct)) return;
+
+  event.preventDefault();
+
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+  target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+
+  // Keep the address bar in step with the anchor without stacking history entries.
+  if (window.history?.replaceState) window.history.replaceState(null, "", `#${ORDER_SECTION_ID}`);
+
+  focusOrderForm();
+}
+
 document.querySelectorAll("[data-order-product]").forEach((cta) => {
-  cta.addEventListener("click", () => {
-    const productSelect = document.getElementById("order-product");
-    if (!productSelect) return;
-    productSelect.value = cta.dataset.orderProduct;
-  });
+  // Defence in depth: if a product CTA is ever wired to WhatsApp again, put it
+  // back on the internal link instead of letting the click open a chat.
+  if (WHATSAPP_URL_PATTERN.test(cta.getAttribute("href") || "")) {
+    cta.setAttribute("href", `#${ORDER_SECTION_ID}`);
+  }
+  cta.addEventListener("click", handleProductCtaClick);
 });
 
 /* ─── Reveal-on-scroll ─── */
