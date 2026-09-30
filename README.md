@@ -19,15 +19,43 @@ Then open `http://localhost:8000`.
 2. Clicking one never opens WhatsApp. It scrolls to the existing order/enquiry form and
    preselects that frame in the form's **Interested in** field.
 3. The customer fills in the form and submits it. Only then does the page hand the enquiry
-   over to WhatsApp, using the number configured in `script.js`.
+   over to WhatsApp, using the number configured in `script.js`. The same submission is
+   also recorded in the team's Google Sheet (see below) — WhatsApp always happens first
+   and is never delayed by the sheet recording.
 4. The floating WhatsApp button, the footer chat link and the closing CTA are direct-chat
    links: they keep opening WhatsApp immediately with their prefilled `data-whatsapp` message.
+
+## Lead recording (Google Sheets)
+
+On every valid form submission the page also POSTs the enquiry to the CK Shades Google
+Apps Script Web App, which appends a row to the leads spreadsheet (Date | Name | Phone |
+Product | Colour/Style | Message | Status — the script stamps Date and Status "New"
+itself).
+
+- **Endpoint:** the `LEADS_ENDPOINT` constant in the “Google Sheets lead recording”
+  section of `script.js`.
+- **Payload:** `{ name, phone, product, colour, message }` — exactly what the customer
+  entered. `colour` is the selected frame's colourway description (e.g. “Sculpted black
+  acetate · Smoke lens”), read from the product card, and is empty when no frame is
+  selected.
+- **Content type:** the JSON string is sent as `text/plain`. Apps Script Web Apps do not
+  answer CORS preflight requests, so a literal `application/json` header would be blocked
+  by the browser before the script ever ran. `doPost` should read `e.postData.contents`
+  and `JSON.parse` it.
+- **The customer never waits:** WhatsApp opens first; the POST is fire-and-forget with up
+  to 3 attempts and a request timeout. Any 2xx response counts as delivered.
+- **No lead is silently lost:** if all attempts fail, the lead is queued in `localStorage`
+  (capped at 25) and re-sent automatically on the next page load or when the browser comes
+  back online. Failures are logged as console warnings for diagnostics; the page itself
+  never breaks.
 
 ## Tests
 
 The shopping flow is covered by a DOM test suite (jsdom + Node's built-in test runner). It
 loads the real `index.html` and runs the real `script.js`, then checks every step of the flow
-for all four frames.
+for all four frames. `tests/lead-recording.test.mjs` covers the Google Sheets integration
+(payload shape, retry/queue behaviour, and that the WhatsApp handoff is never delayed or
+broken by it); the shared harness lives in `tests/helpers/dom.mjs`.
 
 ```sh
 npm install   # dev-only dependency (jsdom); the page itself still has no build step
