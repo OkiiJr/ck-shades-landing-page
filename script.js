@@ -112,7 +112,12 @@ if (orderForm) {
     const product = fields.product.value;
     const message = fields.message.value.trim();
 
-    let text = `Hello CK Shades! 👋\n\nMy name is ${name}.`;
+    // The greeting is deliberately plain ASCII. It used to end with a waving-hand
+    // emoji, whose 4 raw UTF-8 bytes were the only non-ASCII content in the whole
+    // message: at the first hop that did not preserve UTF-8 exactly it came out as
+    // U+FFFD, the replacement character. The greeting must stay free of characters
+    // that can be mangled in transit.
+    let text = `Hello CK Shades!\n\nMy name is ${name}.`;
     text += `\nPhone: ${phone}`;
 
     if (product) {
@@ -126,7 +131,11 @@ if (orderForm) {
     }
 
     text += `\n\nLooking forward to hearing from you!`;
-    return text;
+
+    // Final guard: drop any U+FFFD that could still be introduced elsewhere in the
+    // pipeline, so the handoff can never carry a broken glyph. Written as an escape
+    // sequence so the check itself is pure ASCII and immune to the same problem.
+    return text.replace(/\uFFFD/g, "");
   }
 
   orderForm.addEventListener("submit", (e) => {
