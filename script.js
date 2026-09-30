@@ -4,7 +4,10 @@ document.documentElement.classList.add("js");
 const WHATSAPP_NUMBER = "2347046640309";
 const DEFAULT_WHATSAPP_MESSAGE = "Hello CK Shades, I'd love to know more about the collection.";
 
-const whatsappLinks = document.querySelectorAll("[data-whatsapp]");
+// Direct-chat CTAs (floating button, footer chat link, closing CTA) get their
+// WhatsApp handoff here. Product purchase CTAs carry data-order-product and
+// route to the order form instead — never rewrite those to wa.me links.
+const whatsappLinks = document.querySelectorAll("[data-whatsapp]:not([data-order-product])");
 whatsappLinks.forEach((link) => {
   const message = link.dataset.whatsapp || DEFAULT_WHATSAPP_MESSAGE;
   link.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -148,6 +151,19 @@ if (orderForm) {
     orderForm.appendChild(success);
   });
 }
+
+/* ─── Product CTAs → order form ─── */
+
+// Product CTAs link to #order natively: smooth scrolling, the sticky-header
+// offset and the reduced-motion fallback are all handled by existing CSS.
+// On click we just preselect the matching frame in the order form.
+document.querySelectorAll("[data-order-product]").forEach((cta) => {
+  cta.addEventListener("click", () => {
+    const productSelect = document.getElementById("order-product");
+    if (!productSelect) return;
+    productSelect.value = cta.dataset.orderProduct;
+  });
+});
 
 /* ─── Reveal-on-scroll ─── */
 
