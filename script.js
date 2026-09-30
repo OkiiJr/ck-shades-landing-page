@@ -138,6 +138,20 @@ if (orderForm) {
     return text.replace(/\uFFFD/g, "");
   }
 
+  // The Google Sheets record mirrors exactly what the customer selected and
+  // typed. Product may be "" (the field is optional); "colour" is the selected
+  // frame's colourway description, derived in colourForProduct().
+  function buildLeadPayload() {
+    const product = fields.product.value;
+    return {
+      name: fields.name.value.trim(),
+      phone: fields.phone.value.trim(),
+      product,
+      colour: colourForProduct(product),
+      message: fields.message.value.trim(),
+    };
+  }
+
   orderForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -150,7 +164,23 @@ if (orderForm) {
     const text = buildMessage();
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
+    // The WhatsApp handoff happens first, synchronously: the customer never
+    // waits for Google Sheets.
     window.open(url, "_blank", "noopener");
+
+    // Record the lead in the CK Shades Google Sheet (see the "Google Sheets
+    // lead recording" section). Fire-and-forget: the request starts here but
+    // runs entirely in the background, retries itself, and is guarded so it
+    // can never delay, break or replace the WhatsApp handoff above. If it
+    // ultimately fails, the lead is queued locally and re-sent later, so it
+    // is never silently lost.
+    try {
+      sendLeadToSheets(buildLeadPayload()).catch((error) => {
+        console.warn("[CK Shades] Unexpected error while recording the enquiry.", error);
+      });
+    } catch (error) {
+      console.warn("[CK Shades] Could not start the Google Sheets lead recording.", error);
+    }
 
     // Show success state
     orderForm.classList.add("is-sent");
@@ -163,6 +193,197 @@ if (orderForm) {
     orderForm.appendChild(success);
   });
 }
+
+/* ─── Google Sheets lead recording ─── */
+
+// On every valid submission the enquiry is also POSTed — as JSON — to this
+// Google Apps Script Web App, which appends a row to the CK Shades leads
+// spreadsheet (Date | Name | Phone | Product | Colour/Style | Message |
+// Status; the script stamps Date and generates Status "New" itself).
+//
+// Ground rules, in order of importance:
+//   1. The WhatsApp handoff is the customer-facing channel and always runs
+//      first, synchronously. This recording is never allowed to delay it.
+//   2. The recording is fire-and-forget: failures are logged and retried in
+//      the background, never surfaced as a broken page.
+//   3. A lead that still cannot be delivered is queued in localStorage and
+//      re-sent on the next page load (or when connectivity returns), so no
+//      lead is silently lost.
+//
+// The request is deliberately a CORS "simple request": the JSON string is
+// sent in a text/plain body. Apps Script Web Apps do not answer CORS
+// preflights, so a real application/json Content-Type would make browsers
+// block the request before it ever reached the script.
+const LEADS_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbx7sDpaG5r6VkHSAhmMyVb0mfLZF1n0a1125sFd8U4hBD9bAcKuoSlL3VT8dD4f2F5M/exec";
+const LEADS_QUEUE_KEY = "ck-shades:pending-leads";
+const LEADS_MAX_QUEUE = 25;
+const LEADS_MAX_ATTEMPTS = 3;
+const LEADS_RETRY_DELAYS_MS = [1000, 3000]; // wait before retry 2 and retry 3
+const LEADS_REQUEST_TIMEOUT_MS = 15000;
+
+// "Noir 01 — $190" → the frame's colourway description ("Sculpted black
+// acetate · Smoke lens"), read from the matching product card so it stays in
+// sync with the page content. Returns "" when no frame is selected or the
+// value matches no card.
+function colourForProduct(productValue) {
+  const key = frameKey(productValue); // function declaration below (hoisted)
+  if (!key) return "";
+
+  for (const cta of document.querySelectorAll("[data-order-product]")) {
+    if (frameKey(cta.dataset.orderProduct) !== key) continue;
+    const description = cta.closest(".product-card")?.querySelector(".product-description");
+    if (description) return description.textContent.replace(/\s+/g, " ").trim();
+  }
+  return "";
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+// One delivery attempt. Resolves true on any 2xx response, throws otherwise
+// (non-2xx status, network/CORS failure, timeout).
+function postLeadAttempt(payload) {
+  if (typeof fetch !== "function") {
+    return Promise.reject(new Error("fetch() is not available in this browser"));
+  }
+
+  // Abort a hung request so the retry loop can move on. Apps Script cold
+  // starts can be slow, so the cap is generous.
+  const controller = typeof AbortController === "function" ? new AbortController() : null;
+  const timeoutId = controller
+    ? setTimeout(() => controller.abort(), LEADS_REQUEST_TIMEOUT_MS)
+    : null;
+
+  return fetch(LEADS_ENDPOINT, {
+    method: "POST",
+    // text/plain carrying a JSON string (see the comment above the constants).
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+    // Let the request outlive the tab if the customer closes it right after
+    // WhatsApp opens.
+    keepalive: true,
+    signal: controller ? controller.signal : undefined,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Leads endpoint responded with HTTP ${response.status}`);
+      }
+      return true;
+    })
+    .finally(() => {
+      if (timeoutId !== null) clearTimeout(timeoutId);
+    });
+}
+
+// Up to LEADS_MAX_ATTEMPTS tries with a short backoff between them. Resolves
+// true once delivered, false if every attempt failed.
+async function deliverLead(payload) {
+  for (let attempt = 1; attempt <= LEADS_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      await postLeadAttempt(payload);
+      return true;
+    } catch (error) {
+      if (attempt < LEADS_MAX_ATTEMPTS) {
+        await sleep(LEADS_RETRY_DELAYS_MS[attempt - 1] ?? 2000);
+      } else {
+        console.warn(
+          `[CK Shades] Could not record the enquiry in Google Sheets after ${LEADS_MAX_ATTEMPTS} attempts. It has been queued and will be re-sent automatically.`,
+          error
+        );
+      }
+    }
+  }
+  return false;
+}
+
+function readLeadQueue() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(LEADS_QUEUE_KEY) || "[]");
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((entry) => entry && typeof entry.id === "string" && entry.payload);
+  } catch {
+    return [];
+  }
+}
+
+function writeLeadQueue(entries) {
+  try {
+    window.localStorage.setItem(LEADS_QUEUE_KEY, JSON.stringify(entries));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function newLeadId() {
+  return `lead-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function enqueueLead(payload) {
+  const entries = readLeadQueue();
+  entries.push({ id: newLeadId(), payload });
+
+  // The queue must never grow unbounded; drop the oldest if it somehow fills.
+  while (entries.length > LEADS_MAX_QUEUE) {
+    entries.shift();
+    console.warn("[CK Shades] Lead queue overflow: the oldest undelivered lead was dropped.");
+  }
+
+  if (!writeLeadQueue(entries)) {
+    // Storage is unavailable — leave an explicit breadcrumb in the console
+    // rather than losing the lead silently.
+    console.warn("[CK Shades] Lead could not be queued locally (storage unavailable).", payload);
+    return false;
+  }
+  console.info(`[CK Shades] Lead queued for retry on the next page load (${entries.length} pending).`);
+  return true;
+}
+
+function sendLeadToSheets(payload) {
+  return deliverLead(payload).then((delivered) => {
+    if (!delivered) enqueueLead(payload);
+  });
+}
+
+// Re-send leads queued by earlier visits. One attempt per lead per flush; the
+// next page load or "online" event provides further chances, so a busy failure
+// loop is never needed.
+let flushingLeadQueue = false;
+
+async function flushQueuedLeads() {
+  if (flushingLeadQueue) return;
+  const entries = readLeadQueue();
+  if (entries.length === 0) return;
+
+  flushingLeadQueue = true;
+  try {
+    for (const entry of entries) {
+      try {
+        if (await postLeadAttempt(entry.payload)) {
+          // Remove only this entry; leads enqueued meanwhile are preserved.
+          writeLeadQueue(readLeadQueue().filter((queued) => queued.id !== entry.id));
+        }
+      } catch {
+        // Stays queued for a later flush.
+      }
+    }
+  } finally {
+    flushingLeadQueue = false;
+  }
+}
+
+flushQueuedLeads().catch((error) => {
+  console.warn("[CK Shades] Could not re-send queued leads.", error);
+});
+window.addEventListener("online", () => {
+  flushQueuedLeads().catch((error) => {
+    console.warn("[CK Shades] Could not re-send queued leads.", error);
+  });
+});
 
 /* ─── Product CTAs → the existing order / enquiry form ─── */
 

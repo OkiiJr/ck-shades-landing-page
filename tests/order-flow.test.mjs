@@ -15,102 +15,18 @@
  * Run with: npm test
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-import { JSDOM, VirtualConsole } from "jsdom";
-
-const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
-const HTML = read("index.html");
-const SCRIPT = read("script.js");
-
-const WHATSAPP_NUMBER = "2347046640309";
-const WHATSAPP_URL_PREFIX = `https://wa.me/${WHATSAPP_NUMBER}?text=`;
-
-const PRODUCTS = [
-  { name: "Noir 01", price: "$190", value: "Noir 01 — $190" },
-  { name: "Sienna 02", price: "$185", value: "Sienna 02 — $185" },
-  { name: "Forma 03", price: "$195", value: "Forma 03 — $195" },
-  { name: "Sol 04", price: "$210", value: "Sol 04 — $210" },
-];
-
-/** Boots index.html + script.js in a jsdom window and records side effects. */
-function boot({ mutate, reducedMotion = false } = {}) {
-  const errors = [];
-  const virtualConsole = new VirtualConsole();
-  virtualConsole.on("jsdomError", (error) => errors.push(error));
-  virtualConsole.on("error", (message) => errors.push(new Error(String(message))));
-
-  const dom = new JSDOM(HTML, {
-    url: "https://ckshades.example/",
-    runScripts: "outside-only",
-    virtualConsole,
-  });
-
-  const { window } = dom;
-
-  // jsdom has no layout engine, so record scroll requests instead of performing them.
-  const scrolls = [];
-  window.Element.prototype.scrollIntoView = function scrollIntoView(options) {
-    scrolls.push({ element: this, options });
-  };
-
-  const opened = [];
-  window.open = (url, target, features) => {
-    opened.push({ url: String(url), target, features });
-    return null;
-  };
-
-  // jsdom's matchMedia always reports matches: false; let tests drive the media queries.
-  const inheritedMatchMedia = window.matchMedia?.bind(window);
-  const stub = (query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addEventListener() {},
-    removeEventListener() {},
-    addListener() {},
-    removeListener() {},
-    dispatchEvent: () => false,
-  });
-  window.matchMedia = (query) =>
-    query.includes("prefers-reduced-motion")
-      ? { ...stub(query), matches: reducedMotion }
-      : (inheritedMatchMedia?.(query) ?? stub(query));
-
-  mutate?.(window.document);
-  window.eval(SCRIPT);
-
-  return {
-    dom,
-    window,
-    document: window.document,
-    scrolls,
-    opened,
-    errors,
-    /** Any renderer-level navigation failure, e.g. a browser navigating to wa.me. */
-    navigationErrors: () =>
-      errors.filter((error) => /not implemented.*navigation/i.test(error.message ?? String(error))),
-  };
-}
-
-const ctasFor = (scope, productName) =>
-  [...scope.querySelectorAll(`[data-order-product]`)].filter((cta) =>
-    cta.dataset.orderProduct.startsWith(productName)
-  );
-
-const productSelectValue = (document) => document.getElementById("order-product").value;
-
-function fillForm(document, { name = "Ada Obi", phone = "+234 801 234 5678", message = "" } = {}) {
-  document.getElementById("order-name").value = name;
-  document.getElementById("order-phone").value = phone;
-  document.getElementById("order-message").value = message;
-}
-
-function submit(document) {
-  const form = document.getElementById("order-form");
-  form.dispatchEvent(new document.defaultView.Event("submit", { bubbles: true, cancelable: true }));
-  return form;
-}
+import {
+  PRODUCTS,
+  SCRIPT,
+  WHATSAPP_NUMBER,
+  WHATSAPP_URL_PREFIX,
+  boot,
+  ctasFor,
+  fillForm,
+  productSelectValue,
+  submit,
+} from "./helpers/dom.mjs";
 
 /* ─────────────────────────── 1. Product CTA markup ─────────────────────────── */
 
