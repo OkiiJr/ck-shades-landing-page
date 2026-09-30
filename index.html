@@ -37,6 +37,7 @@
           <a href="#home">Home</a>
           <a href="#collection">Collection</a>
           <a href="#about">About</a>
+          <a href="#order">Order</a>
           <a href="#contact">Contact</a>
         </nav>
 
@@ -60,6 +61,7 @@
         <a href="#home">Home</a>
         <a href="#collection">Collection</a>
         <a href="#about">About</a>
+        <a href="#order">Order</a>
         <a href="#contact">Contact</a>
         <a class="button button-dark" href="#collection">Shop collection <span aria-hidden="true">↗</span></a>
       </nav>
@@ -375,6 +377,51 @@
         </div>
       </section>
 
+      <section class="order-section section-space" id="order" aria-labelledby="order-title">
+        <div class="container order-layout">
+          <div class="order-intro" data-reveal>
+            <p class="eyebrow">07 <span class="eyebrow-separator">/</span> Place an order</p>
+            <h2 id="order-title">Let's find your <em>perfect pair.</em></h2>
+            <p class="order-description">Tell us a little about what you're looking for — we'll take it from there. Every order is handled personally through WhatsApp for a smooth, one-to-one experience.</p>
+            <div class="order-trust">
+              <div><span>01</span><p>Personal service</p></div>
+              <div><span>02</span><p>Secure WhatsApp checkout</p></div>
+              <div><span>03</span><p>Direct from our team</p></div>
+            </div>
+          </div>
+          <form class="order-form" id="order-form" novalidate data-reveal>
+            <div class="form-group">
+              <label for="order-name">Full name <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="order-name" name="name" placeholder="Your name" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="order-phone">Phone number <span class="required" aria-hidden="true">*</span></label>
+              <input type="tel" id="order-phone" name="phone" placeholder="+234 800 000 0000" required autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label for="order-product">Interested in</label>
+              <select id="order-product" name="product">
+                <option value="" selected>Choose a frame (optional)</option>
+                <option value="Noir 01 — $190">Noir 01 — $190</option>
+                <option value="Sienna 02 — $185">Sienna 02 — $185</option>
+                <option value="Forma 03 — $195">Forma 03 — $195</option>
+                <option value="Sol 04 — $210">Sol 04 — $210</option>
+                <option value="Not sure yet">Not sure yet — help me choose</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="order-message">Message</label>
+              <textarea id="order-message" name="message" rows="4" placeholder="Anything else you'd like us to know — colour preference, lens type, shipping details…"></textarea>
+            </div>
+            <button type="submit" class="button button-dark order-submit">
+              <span>Send enquiry via WhatsApp</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.4 3.6A11.8 11.8 0 0 0 1.9 17.8L.3 23.7l6-1.6A11.8 11.8 0 0 0 22 11.8c0-3.1-1.2-6-3.4-8.2ZM12 20.2a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.6 1 1-3.5-.2-.4A9.8 9.8 0 1 1 12 20.2Zm5.4-7.4c-.3-.2-1.7-.9-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7 0a8.1 8.1 0 0 1-2.4-1.5 8.7 8.7 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.7l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6s-.7-1.7-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.8 1.2 3.2 1.4 3.4c.2.2 2.4 3.7 5.8 5.1.8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.7-.7 1.9-1.3.2-.6.2-1.1.2-1.3-.1-.2-.3-.3-.6-.5Z" /></svg>
+            </button>
+            <p class="form-note">You'll be taken to WhatsApp to complete your enquiry. No payment is collected here.</p>
+          </form>
+        </div>
+      </section>
+
       <section class="closing-cta" id="contact" aria-labelledby="closing-title">
         <div class="closing-inner container" data-reveal>
           <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> Find your point of view</p>
@@ -412,6 +459,7 @@
             <a href="#home">Home</a>
             <a href="#collection">Collection</a>
             <a href="#signature">Signature edit</a>
+            <a href="#order">Place an order</a>
             <a href="#about">Our story</a>
           </div>
           <div class="footer-column">
