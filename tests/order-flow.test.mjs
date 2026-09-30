@@ -248,6 +248,43 @@ test("submitting the form opens WhatsApp with the preselected frame", () => {
   assert.match(text, /Gift wrap please/);
 });
 
+test("the WhatsApp message is cleanly encoded (no replacement character)", () => {
+  const { document, opened } = boot();
+
+  ctasFor(document, "Noir 01")[0].click();
+  fillForm(document, { name: "Ada Obi", phone: "+234 801 234 5678" });
+  submit(document);
+
+  assert.equal(opened.length, 1);
+  const text = decodeURIComponent(opened[0].url.slice(WHATSAPP_URL_PREFIX.length));
+
+  // The reported bug: the greeting ended with a waving-hand emoji whose raw bytes
+  // degraded to U+FFFD ("Hello CK Shades! <replacement character>") on the way to WhatsApp.
+  assert.equal(text.includes("\uFFFD"), false, "the handoff must not carry the replacement character");
+  assert.doesNotMatch(text, /[\u{10000}-\u{10FFFF}]/u, "the handoff must not rely on non-BMP characters");
+
+  // The greeting is plain ASCII, and the rest of the structure is unchanged.
+  assert.equal(text.split("\n")[0], "Hello CK Shades!");
+  assert.equal(
+    text,
+    "Hello CK Shades!\n\nMy name is Ada Obi.\nPhone: +234 801 234 5678\n" +
+      "I'm interested in: Noir 01 \u2014 $190\n\nLooking forward to hearing from you!"
+  );
+});
+
+test("a replacement character from any other source never reaches the handoff", () => {
+  const { document, opened } = boot();
+
+  ctasFor(document, "Sol 04")[0].click();
+  fillForm(document, { message: "Please gift wrap \uFFFD it" });
+  submit(document);
+
+  assert.equal(opened.length, 1);
+  const text = decodeURIComponent(opened[0].url.slice(WHATSAPP_URL_PREFIX.length));
+  assert.equal(text.includes("\uFFFD"), false, "the broken glyph is stripped before the handoff");
+  assert.match(text, /Please gift wrap  it/);
+});
+
 for (const product of PRODUCTS) {
   test(`end-to-end: ${product.name} is ordered through the form without a detour to WhatsApp`, () => {
     const { document, opened, navigationErrors } = boot();
